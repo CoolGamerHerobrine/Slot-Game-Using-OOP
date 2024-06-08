@@ -1,86 +1,79 @@
 import random
 
 
-class Gamble:
-    
+class SlotMachine:
+
     def __init__(self):
-        self.balance = 100
+        self.balance = None
         self.bet = None
         self.list_emoji = ['🛎️', '🍒️', '🍌️']
     
-    def get_balance(self):
-        return self.balance
-    
-    def get_bet(self):
-        return self.bet 
-    
     def make_bet(self, number):
         if number > self.balance:
-            print("Can't bet more than your current balance")
+            print("Invalid bet, bet cannot be greater than your bank account")
+            return False
         
         if number <= 0:
-            print("Can't bet 0 or less than 0 rupees")
+            print("Invalid bet, bet cannot be equal or smaller than 0")
+            return False
         
-        else:
-            self.balance = self.balance - number
-            return
-        
+        self.bet = number
+        self.balance -= self.bet
+        return True
     
     def spin(self):
         slot = []
-        p1 = None
-        p2 = None
-        p3 = None
-
-        for i in range(1):
-            p1 = random.choice(self.list_emoji)
-            slot.append(p1)
-            p2 = random.choice(self.list_emoji)
-            slot.append(p2)
-            p3 = random.choice(self.list_emoji)
-            slot.append(p3)
+        for i in range(3):
+            slot.append(random.choice(self.list_emoji))
         
         print(slot)
         if (slot[0] == slot[1] == slot[2]):
             print("You win")
+            reward = 4 * self.bet
+            print(f"+{reward}")
+            self.balance += reward
 
-            self.balance =  self.balance + 4 * self.bet
+            print(reward)
         
         else:
-            print("You lose")
-        
-        print()
-
+            print("You lose\nTry again next time")
+            print()
+    
 
 def main(game):
-    while True:
-        print("*****************")
-        print("Slot Game\t")
-        print("*****************")
-        print()
-        print("Press 1 to start")
-        print("Press 2 to quit")
-
-        choice = input("Enter your choice: ")
-        if choice not in ['1', '2']:
-            print("Invalid entry")
+    current_balance = input("Enter your balance: ")
+    if current_balance.isdigit():
+        current_balance = int(current_balance)
+        game.balance = current_balance
         
-        if choice == '1':
+        while True:
+            print("*****🛎️ 🍒️ 🍌️*****")
+            print("🛎️ SLOT MACHINE 🍒️")
+            print("*****🛎️ 🍒️ 🍌️*****")
             print(f"Current Balance: {game.balance}")
-            betting = int(input("Enter your betting: "))
-            game.bet = betting
-            game.make_bet(game.bet)
-            game.spin()
-        
-        if choice == '2':
-            break
-    
-    exit()
+            print()
+            print("1. Press 1 to play the game")
+            print("2. Press 2 to exit the game")
+            choice = input("Enter your choice: ")
+            
+            if choice not in ['1', '2']:
+                print("Invalid choice")
 
+            if choice == '1':
+                betting = input("Enter your bet here: ")
+                if not betting.isdigit():
+                    print("Invalid bet, must be a number")
+    
+                betting = int(betting)
+                if game.make_bet(betting):
+                    game.spin()
+                else:
+                    print("Try again")
+
+            if choice == '2':
+                break
+        
 
 
 if __name__ == '__main__':
-    main(Gamble())
-
-
-
+    main(SlotMachine())
